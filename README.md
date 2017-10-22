@@ -47,14 +47,16 @@ template <class T> Result::Content print_example(IResult<T> r)
     switch (r.type()) {
     case Result::Content::Value:
         std::cout << "Result has value " << r.get() << std::endl;
-        return Result::Content::Value;
+        break;
     case Result::Content::Error:
         std::cout << "Result has error " << r.error().message() << std::endl;
-        return Result::Content::Error;
+        break;
     case Result::Content::Empty:
         std::cout << "Result does not contain anything" << std::endl;
-        return Result::Content::Empty;
+        break;
     }
+
+    return r.type();
 }
 
 
