@@ -14,8 +14,8 @@
  */
 
 
-#ifndef _RESULT_H_
-#define _RESULT_H_
+#ifndef _RESULT_HPP_
+#define _RESULT_HPP_
 
 #include <string>
 #include <variant>
@@ -155,4 +155,4 @@ public:
 };
 };
 
-#endif /* _RESULT_H_ */
+#endif /* _RESULT_HPP_ */
