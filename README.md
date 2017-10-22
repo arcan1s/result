@@ -6,13 +6,21 @@ Simple header-only variant-driven C++17 `Result<T,E>` implementation.
 
 * c++17 or c++1z with support of variant
 
+## Features
+
+* Small, header-only.
+* Pure C++.
+* Human and machine readable (with custom return errors support) error
+  representation.
+* Compile-time check of dereference.
+
 ## Usage example
 
 ```cpp
 #include <cassert>
 #include <iostream>
 
-#include "result.h"
+#include "result.hpp"
 
 using namespace std::string_literals;
 
