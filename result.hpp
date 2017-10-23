@@ -47,7 +47,11 @@ template <typename ErrorEnum> class Error
 {
 public:
     /**
-     * @brief Error class default constructor
+     * @brief default class constructor
+     */
+    Error() = default;
+    /**
+     * @brief Error class constructor
      * @param message
      * human readable error message
      * @param code
