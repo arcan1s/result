@@ -134,13 +134,16 @@ public:
      * @throw std::bad_variant_access
      * @return result value if holded
      */
-    T get() { return std::get<T>(*this); };
+    T get() const { return std::get<T>(*this); };
     /**
      * @brief get result error
      * @throw std::bad_variant_access
      * @return result error if holded
      */
-    Error<ErrorEnum> error() { return std::get<Error<ErrorEnum>>(*this); };
+    Error<ErrorEnum> error() const
+    {
+        return std::get<Error<ErrorEnum>>(*this);
+    };
     /**
      * @brief get result content
      */
