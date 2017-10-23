@@ -111,6 +111,10 @@ class Result : public std::variant<T, Error<ErrorEnum>>
 {
 public:
     /**
+     * @brief default class constructor
+     */
+    Result() = default;
+    /**
      * @brief Result constructor with value
      * @param value
      * result value
