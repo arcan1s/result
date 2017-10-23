@@ -53,7 +53,7 @@ public:
      * @param code
      * machine readable error code
      */
-    explicit Error(std::string message, ErrorEnum code)
+    Error(std::string message, ErrorEnum code)
         : m_code(code)
     {
         m_message = std::move(message);
