@@ -57,7 +57,7 @@ public:
      * @param code
      * machine readable error code
      */
-    Error(std::string message, ErrorEnum code)
+    Error(const std::string message, const ErrorEnum code)
         : m_code(code)
     {
         m_message = std::move(message);
@@ -67,15 +67,15 @@ public:
      * @param message
      * human readable error message
      */
-    Error(ErrorEnum code)
+    Error(const ErrorEnum code)
         : Error("", code){};
     /**
      * @brief Error class constructor with empty error message
      * @param code
      * machine readable error code
      */
-    Error(std::string message)
-        : Error(message, static_cast<ErrorEnum>(0)){};
+    Error(const std::string message)
+        : Error(message, ErrorEnum()){};
     /**
      * @brief Error class destructor
      */
@@ -110,7 +110,7 @@ private:
  * @tparam ErrorEnum
  * error code enumeration
  */
-template <class T, typename ErrorEnum>
+template <typename T, typename ErrorEnum>
 class Result : public std::variant<T, Error<ErrorEnum>>
 {
 public:
@@ -123,14 +123,14 @@ public:
      * @param value
      * result value
      */
-    Result(T value)
+    Result(const T value)
         : std::variant<T, Error<ErrorEnum>>(value){};
     /**
      * @brief Result constructor with error
      * @param error
      * result error
      */
-    Result(Error<ErrorEnum> error)
+    Result(const Error<ErrorEnum> error)
         : std::variant<T, Error<ErrorEnum>>(error){};
 
     /**
@@ -150,6 +150,7 @@ public:
     };
     /**
      * @brief get result content
+     * @return result object content type
      */
     Content type() const
     {
@@ -163,6 +164,41 @@ public:
             return Content::Empty;
         };
     };
+};
+
+// additional functions
+/**
+ * @brief match result function
+ * @tparam T
+ * value class name
+ * @tparam ErrorEnum
+ * error code enumeration
+ * @tparam UnaryFunctionValue
+ * function type which will be called if result contains value
+ * @tparam UnaryFunctionError
+ * function type which will be called if result contains error
+ * @param result
+ * result object
+ * @param apply_value
+ * function which will be called if result contains value
+ * @param apply_error
+ * function which will be called if result contains error
+ */
+template <typename T, typename ErrorEnum, typename UnaryFunctionValue,
+          typename UnaryFunctionError>
+void match(const Result<T, ErrorEnum> &result, UnaryFunctionValue apply_value,
+           UnaryFunctionError apply_error)
+{
+    switch (result.type()) {
+    case Content::Value:
+        apply_value(result.get());
+        break;
+    case Content::Error:
+        apply_error(result.error());
+        break;
+    case Content::Empty:
+        break;
+    }
 };
 };
 
