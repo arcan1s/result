@@ -76,3 +76,20 @@ int main()
     return 0;
 }
 ```
+
+### `Result::match` function
+
+Alternatively you can use tempalte function to do result match, e.g.:
+
+```cpp
+template <class T> Result::Content print_example(IResult<T> r)
+{
+    Result::match(r, [](const T &value) {
+        std::cout << "Result has value " << value << std::endl;
+    }, [](const IError &error) {
+        std::cout << "Result has error " << error.message() << std::endl;
+    });
+
+    return r.type();
+}
+```
