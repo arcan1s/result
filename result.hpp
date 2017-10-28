@@ -164,6 +164,32 @@ public:
             return Content::Empty;
         };
     };
+    /**
+     * @brief match result function
+     * @tparam UnaryFunctionValue
+     * function type which will be called if result contains value
+     * @tparam UnaryFunctionError
+     * function type which will be called if result contains error
+     * @param apply_value
+     * function which will be called if result contains value
+     * @param apply_error
+     * function which will be called if result contains error
+     */
+    template <typename UnaryFunctionValue, typename UnaryFunctionError>
+    void match(UnaryFunctionValue apply_value,
+               UnaryFunctionError apply_error) const
+    {
+        switch (type()) {
+        case Content::Value:
+            apply_value(get());
+            break;
+        case Content::Error:
+            apply_error(error());
+            break;
+        case Content::Empty:
+            break;
+        }
+    };
 };
 
 // additional functions
@@ -189,16 +215,7 @@ template <typename T, typename ErrorEnum, typename UnaryFunctionValue,
 void match(const Result<T, ErrorEnum> &result, UnaryFunctionValue apply_value,
            UnaryFunctionError apply_error)
 {
-    switch (result.type()) {
-    case Content::Value:
-        apply_value(result.get());
-        break;
-    case Content::Error:
-        apply_error(result.error());
-        break;
-    case Content::Empty:
-        break;
-    }
+    return result.match(apply_value, apply_error);
 };
 };
 
