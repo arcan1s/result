@@ -93,3 +93,61 @@ template <class T> Result::Content print_example(IResult<T> r)
     return r.type();
 }
 ```
+
+### DBus serialization example
+
+This code example is copied from [queued](http://github.com/arcan1s/queued) and
+uses QtDBus classes.
+
+```cpp
+template <typename T, typename ErrorCode>
+inline QDBusArgument &operator<<(QDBusArgument &_argument,
+                                 const Result::Result<T, ErrorCode> &_arg)
+{
+    // HACK we are using explicit cast to QString here to make sure of valid
+    // marshalling
+    _argument.beginStructure();
+    switch (_arg.type()) {
+    case Result::Content::Value:
+        _argument << QString("v");
+        _argument << _arg.get();
+        _argument << Result::Error<ErrorCode>();
+        break;
+    case Result::Content::Error:
+        _argument << QString("e");
+        _argument << T();
+        _argument << _arg.error();
+        break;
+    case Result::Content::Empty:
+        _argument << QString("n");
+        _argument << T();
+        _argument << Result::Error<ErrorCode>();
+        break;
+    }
+    _argument.endStructure();
+
+    return _argument;
+};
+template <typename T, typename ErrorCode>
+inline const QDBusArgument &operator>>(const QDBusArgument &_argument,
+                                       Result::Result<T, ErrorCode> &_arg)
+{
+    QString type;
+    T value;
+    Result::Error<ErrorCode> error;
+
+    _argument.beginStructure();
+    _argument >> type;
+    _argument >> value;
+    _argument >> error;
+    _argument.endStructure();
+
+    if (type == "v")
+        _arg = value;
+    else if (type == "e")
+        _arg = error;
+    else if (type == "n")
+        _arg = Result::Result<T, ErrorCode><T>();
+    return _argument;
+};
+```
