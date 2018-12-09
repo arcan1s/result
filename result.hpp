@@ -190,6 +190,45 @@ public:
             break;
         }
     };
+    /**
+     * @brief do action in case if no errors found
+     * @tparam U
+     * new value class name
+     * @tparam UnaryFunctionValue
+     * function type which will be cased if result contains value
+     * @param apply_value
+     * function which will be called if result contains value
+     * @return newly created result with another holded value type
+     */
+    template <typename U, typename UnaryFunctionValue>
+    Result<U, ErrorEnum> onSuccess(UnaryFunctionValue apply_value) const
+    {
+        Result<U, ErrorEnum> result;
+        match([&result, &apply_value](T value) { result = apply_value(value); },
+              [&result](Error<ErrorEnum> error) { result = error; });
+
+        return result;
+    }
+    /**
+     * @brief recover to T in case of error
+     * @tparam UnaryFunctionError
+     * function type which will be cased if result contains error
+     * @param apply_error
+     * function which will be cased if result contains error
+     * @return value in case of Result::Content::Value, function call result
+     * otherwise
+     */
+    template <typename UnaryFunctionError>
+    T recover(UnaryFunctionError apply_error) const
+    {
+        T val;
+        match([&val](T value) { val = value; },
+              [&val, &apply_error](Error<ErrorEnum> error) {
+                  val = apply_error(error);
+              });
+
+        return val;
+    }
 };
 
 // additional functions
@@ -217,6 +256,6 @@ void match(const Result<T, ErrorEnum> &result, UnaryFunctionValue apply_value,
 {
     return result.match(apply_value, apply_error);
 };
-};
+}; // namespace Result
 
 #endif /* _RESULT_HPP_ */

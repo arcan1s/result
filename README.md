@@ -94,6 +94,25 @@ template <class T> Result::Content print_example(IResult<T> r)
 }
 ```
 
+Construction like `r.match(...)` is also allowed.
+
+### `Result::recover`, `Result::onSuccess`
+
+`Result::recover` can be called in case if you want to set default value in case
+of error or do another action. `Result::onSuccess` can be used to convert your
+value to another one (including doing action if success):
+
+```cpp
+auto convert = [](const int value) { return "str("s + std::to_string(value) + ")"s; };
+
+std::string get_string(IResult<int> r)
+{
+    return r
+        .onSuccess<std::string, decltype(convert)>(convert)
+        .recover([](IError) { return ""s; });
+}
+```
+
 ### DBus serialization example
 
 This code example is copied from [queued](http://github.com/arcan1s/queued) and
