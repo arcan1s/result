@@ -219,9 +219,9 @@ public:
      * otherwise
      */
     template <typename UnaryFunctionError>
-    T recover(UnaryFunctionError apply_error) const
+    Result<T, ErrorEnum> recover(UnaryFunctionError apply_error) const
     {
-        T val;
+        Result<T, ErrorEnum> val;
         match([&val](T value) { val = value; },
               [&val, &apply_error](Error<ErrorEnum> error) {
                   val = apply_error(error);
